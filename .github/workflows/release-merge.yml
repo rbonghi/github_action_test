@@ -20,6 +20,7 @@ jobs:
         VERSION=$(grep __version__ foo/__init__.py | cut -d'"' -f2)
 
         # Extract the version from the branch name
+        echo "${GITHUB_REF#refs/heads/}"
         BRANCH_VERSION=$(echo "${{ github.ref }}" | cut -d'/' -f2)
 
         echo "VERSION=$VERSION - BRANCH_VERSION=$BRANCH_VERSION"
