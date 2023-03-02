@@ -22,6 +22,7 @@ jobs:
         # Extract the version from the branch name
         BRANCH_VERSION=$(echo "${{ github.ref }}" | cut -d'/' -f2)
 
+        echo "VERSION=$VERSION - BRANCH_VERSION=$BRANCH_VERSION"
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
           echo "::error file=foo/__init__.py::version mismatch between foo/__init__.py and branch name"
