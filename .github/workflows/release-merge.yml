@@ -17,15 +17,13 @@ jobs:
 
     - name: Check version consistency
       run: |
-        echo "Pull request title: ${{ github.event.pull_request.title }}"
+        PULL_REQUEST_NAME=${{ github.event.pull_request.title }}
+        echo "Pull request title: $PULL_REQUEST_NAME"
         # Extract the version from foo/__init__.py
         VERSION=$(grep __version__ foo/__init__.py | cut -d'"' -f2)
 
-        # Extract the version from the branch name
-        echo $GITHUB_REF
-        PULL_REQUEST_NAME=${{ github.event.pull_request.title }}
-
-        BRANCH_VERSION=$(echo $BRANCH_NAME | cut -d'/' -f2)
+        # Extract the version from the Pull request name
+        BRANCH_VERSION=$(echo $PULL_REQUEST_NAME | cut -d'/' -f2)
 
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
