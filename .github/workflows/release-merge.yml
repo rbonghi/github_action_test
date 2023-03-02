@@ -1,0 +1,39 @@
+name: Release Merge
+
+on:
+  pull_request_review:
+    types: [submitted]
+  push:
+    branches:
+      - 'release/*'
+
+jobs:
+  merge-and-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Check Tag
+      id: check_tag
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+      run: |
+        tag=$(grep '^__version__' foo/__init__.py | cut -d "'" -f 2)
+        assert "${{ github.event.push.ref }}" == "refs/heads/release/${tag}", tag
+
+    - name: Merge
+      if: steps.check_tag.outcome == 'success' && github.event.review.state == 'approved'
+      run: |
+        git fetch --all
+        git checkout ${{ github.event.push.ref }}
+        git merge origin/main
+        git push
+
+    - name: Tag
+      if: steps.check_tag.outcome == 'success' && github.event.review.state == 'approved'
+      run: |
+        tag=$(echo "${{ github.event.push.ref }}" | sed 's/release\///')
+        git tag -a "${tag}" -m "Release ${tag}"
+        git push origin "${tag}"
