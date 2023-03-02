@@ -23,12 +23,10 @@ jobs:
         BRANCH_NAME=${GITHUB_REF#refs/heads/}
         BRANCH_VERSION=$(echo $BRANCH_NAME | cut -d'/' -f2)
 
-        echo "VERSION=$VERSION - BRANCH_VERSION=$BRANCH_VERSION"
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
           echo "::error::version mismatch between foo/__init__.py=$VERSION and branch=$BRANCH_VERSION"
-          echo "status=failure" >> $GITHUB_OUTPUT
-          # exit 1
+          exit 1
         fi
 
     - name: Merge
