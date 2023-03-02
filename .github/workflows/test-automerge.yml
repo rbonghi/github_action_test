@@ -1,24 +1,16 @@
-name: Dependabot Auto-Merge
+name: Auto-merge Dependabot
+on: pull_request
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+permissions:
+  pull-requests: write
+  contents: write
 
 jobs:
-  merge-dependabot:
+  automerge:
     runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        # https://github.com/peter-evans/enable-pull-request-automerge
-      - name: Merge Dependabot PR
-        uses: peter-evans/enable-pull-request-automerge@v2
+      - uses: peter-evans/enable-pull-request-automerge@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: merge
-          commit-message: Dependabot auto-merge
-          delete-branch: true
-          pull-request-filter: |
-            head.repo.full_name == 'dependabot-preview[bot]/dependabot-core' &&
-            contains(head.ref, 'dependabot') &&
-            pull_request.labels.any(name == 'automerge')
