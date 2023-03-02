@@ -3,6 +3,7 @@ name: Release Merge
 on:
   pull_request_review:
     types: [submitted]
+  push:
     branches:
       - 'release/*'
 
@@ -23,7 +24,7 @@ jobs:
 
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
-          echo "Error: version mismatch between foo/__init__.py and branch name"
+          echo "::error version mismatch between foo/__init__.py and branch name"
           exit 1
         fi
 
