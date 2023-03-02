@@ -2,26 +2,29 @@ name: Release Merge
 
 on:
   pull_request:
-    types: [closed]
-  push:
-    branches:
-      - 'release/*'
+    types: [opened, edited, reopened, synchronize, closed]
+
+permissions:
+  pull-requests: write
+  contents: write
 
 jobs:
   merge-and-tag:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.pull_request.title, 'Release')
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
     - name: Check version consistency
       run: |
+        PULL_REQUEST_NAME=${{ github.event.pull_request.title }}
+        echo "Pull request title: $PULL_REQUEST_NAME"
         # Extract the version from foo/__init__.py
         VERSION=$(grep __version__ foo/__init__.py | cut -d'"' -f2)
 
-        # Extract the version from the branch name
-        BRANCH_NAME=${GITHUB_REF#refs/heads/}
-        BRANCH_VERSION=$(echo $BRANCH_NAME | cut -d'/' -f2)
+        # Extract the version from the Pull request name
+        BRANCH_VERSION=$(echo $PULL_REQUEST_NAME | cut -d'/' -f2)
 
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
