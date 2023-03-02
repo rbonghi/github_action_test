@@ -35,6 +35,7 @@ jobs:
     - name: Tag
       if: github.event.pull_request.merged == true && github.event.pull_request.merged_by != null
       run: |
-        tag=$(echo "${{ github.event.push.ref }}" | sed 's/release\///')
+        PULL_REQUEST_NAME=${{ github.event.pull_request.title }}
+        tag=$(echo $PULL_REQUEST_NAME | cut -d'/' -f2)
         git tag -a "${tag}" -m "Release ${tag}"
         git push origin "${tag}"
