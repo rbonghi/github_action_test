@@ -3,6 +3,7 @@ name: Release Merge
 on:
   pull_request_review:
     types: [submitted]
+  push:
     branches:
       - 'release/*'
 
@@ -19,11 +20,12 @@ jobs:
         VERSION=$(grep __version__ foo/__init__.py | cut -d'"' -f2)
 
         # Extract the version from the branch name
-        BRANCH_VERSION=$(echo "${{ github.ref }}" | cut -d'/' -f2)
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        BRANCH_VERSION=$(echo $BRANCH_NAME | cut -d'/' -f2)
 
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
-          echo "Error: version mismatch between foo/__init__.py and branch name"
+          echo "::error::version mismatch between foo/__init__.py=$VERSION and branch=$BRANCH_VERSION"
           exit 1
         fi
 
