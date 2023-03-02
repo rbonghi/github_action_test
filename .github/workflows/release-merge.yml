@@ -2,9 +2,13 @@ name: Release Merge
 
 on:
   pull_request:
-    types: [opened, closed]
-    branches:
-      - 'release/*'
+    #types: [opened, closed]
+    #branches:
+    #  - 'release/*'
+
+permissions:
+  pull-requests: write
+  contents: write
 
 jobs:
   merge-and-tag:
