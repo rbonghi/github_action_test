@@ -26,7 +26,8 @@ jobs:
         echo "VERSION=$VERSION - BRANCH_VERSION=$BRANCH_VERSION"
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
-          echo "::error file=foo/__init__.py::version mismatch between foo/__init__.py and branch name"
+          echo "::error::version mismatch between foo/__init__.py=$VERSION and branch=$BRANCH_VERSION"
+          echo "::set-output name=status::failure"
           # exit 1
         fi
 
