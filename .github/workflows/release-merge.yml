@@ -42,4 +42,4 @@ jobs:
       id: tag_create
       with:
         tag: ${{ steps.version_check.outputs.tag }}
-        message: Release $TAG
+        message: Release ${{ steps.version_check.outputs.tag }}
