@@ -1,8 +1,8 @@
 name: Release Merge
 
 on:
-  pull_request_review:
-    types: [submitted]
+  pull_request:
+    types: [closed]
   push:
     branches:
       - 'release/*'
@@ -29,16 +29,8 @@ jobs:
           exit 1
         fi
 
-    - name: Merge
-      if: steps.check_tag.outcome == 'success' && github.event.review.state == 'approved'
-      run: |
-        git fetch --all
-        git checkout ${{ github.event.push.ref }}
-        git merge origin/main
-        git push
-
     - name: Tag
-      if: steps.check_tag.outcome == 'success' && github.event.review.state == 'approved'
+      if: github.event.pull_request.merged == true && github.event.pull_request.merged_by != null
       run: |
         tag=$(echo "${{ github.event.push.ref }}" | sed 's/release\///')
         git tag -a "${tag}" -m "Release ${tag}"
