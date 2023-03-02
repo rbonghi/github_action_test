@@ -2,7 +2,7 @@ name: Release Merge
 
 on:
   pull_request:
-    types: [opened, edited, closed]
+    types: [opened, edited, reopened, synchronize, closed]
 
 permissions:
   pull-requests: write
