@@ -14,14 +14,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Check Tag
-      id: check_tag
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+    - name: Check version consistency
       run: |
-        tag=$(grep '^__version__' foo/__init__.py | cut -d "'" -f 2)
-        assert "${{ github.event.push.ref }}" == "refs/heads/release/${tag}", tag
+        # Extract the version from foo/__init__.py
+        VERSION=$(grep __version__ foo/__init__.py | cut -d'"' -f2)
+
+        # Extract the version from the branch name
+        BRANCH_VERSION=$(echo "${{ github.ref }}" | cut -d'/' -f2)
+
+        # Compare the versions
+        if [ "$VERSION" != "$BRANCH_VERSION" ]; then
+          echo "Error: version mismatch between foo/__init__.py and branch name"
+          exit 1
+        fi
 
     - name: Merge
       if: steps.check_tag.outcome == 'success' && github.event.review.state == 'approved'
