@@ -24,8 +24,7 @@ jobs:
 
         # Compare the versions
         if [ "$VERSION" != "$BRANCH_VERSION" ]; then
-          echo "::error file=app.js,line=1::Missing semicolon"
-          echo "::error file=foo/__init__.py::version mismatch between branch name"
+          echo "::error file=foo/__init__.py::version mismatch between foo/__init__.py and branch name"
           exit 1
         fi
 
