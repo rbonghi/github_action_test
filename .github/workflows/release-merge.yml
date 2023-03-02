@@ -41,5 +41,5 @@ jobs:
       uses: rickstaa/action-create-tag@v1
       id: tag_create
       with:
-        tag: ${{ steps.test-version_check.outputs.tag }}
+        tag: ${{ steps.version_check.outputs.tag }}
         message: Release $TAG
